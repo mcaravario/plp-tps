@@ -3,6 +3,9 @@
 ### Reconociendo el paradigma reconociendo el paradigma ###
 
 Integrantes:
-	Juan Cruz Sosa (733/12)
-	Martin Caravario (470/12)
-	Lucas Vuotto (385/12)
+
+| Apellido         | Email                       | Libreta |
+| ---------------- | --------------------------- | ------- |
+| Juan Cruz Sosa   |  nirvguy@gmail.com          | 733/12  |
+| Martin Caravario |  martin.caravario@gmail.com | 470/12  |
+| Lucas Vuotto     |  l.vuotto@dc.uba.ar         | 385/12  |
