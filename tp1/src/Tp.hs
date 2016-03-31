@@ -20,7 +20,7 @@ mean :: [Float] -> Float
 mean xs = realToFrac (sum xs) / genericLength xs
 
 split :: Eq a => a -> [a] -> [[a]]
-split = undefined
+split c = foldl (\acum x -> if x == c then acum++[[]] else (init acum)++[(last acum)++[x]]) [[]]
 
 longitudPromedioPalabras :: Extractor
 longitudPromedioPalabras = undefined
