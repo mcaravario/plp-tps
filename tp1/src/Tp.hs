@@ -25,8 +25,11 @@ split c = foldl (\acum x -> if x == c then acum++[[]] else (init acum)++[(last a
 longitudPromedioPalabras :: Extractor
 longitudPromedioPalabras t = mean $ map (genericLength) (split ' ' t)
 
+cantAp :: Eq a => a -> [a] -> Int
+cantAp a l = length $ filter (==a) l
+
 cuentas :: Eq a => [a] -> [(Int, a)]
-cuentas = undefined
+cuentas l = [(cantAp x l, x) | x <- nub l] 
 
 repeticionesPromedio :: Extractor
 repeticionesPromedio = undefined
