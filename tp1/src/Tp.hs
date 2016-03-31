@@ -45,7 +45,7 @@ normalizarExtractor ts e = (\xs -> e xs / maximo)
 	where maximo = maximum $ map abs (map e ts)
 
 extraerFeatures :: [Extractor] -> [Texto] -> Datos
-extraerFeatures = undefined
+extraerFeatures es ts = [ [ e t | e <- map (normalizarExtractor ts) es ] | t <- ts ]
 
 distEuclideana :: Medida
 distEuclideana = undefined
