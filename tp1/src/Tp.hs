@@ -38,7 +38,7 @@ tokens :: [Char]
 tokens = "_,)(*;-=>/.{}\"&:+#[]<|%!\'@?~^$` abcdefghijklmnopqrstuvwxyz0123456789"
 
 frecuenciaTokens :: [Extractor]
-frecuenciaTokens = undefined
+frecuenciaTokens = [ (\xs -> fromIntegral (cantAp t xs) / genericLength xs) | t <- tokens ]
 
 normalizarExtractor :: [Texto] -> Extractor -> Extractor
 normalizarExtractor = undefined
