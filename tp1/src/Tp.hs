@@ -41,7 +41,8 @@ frecuenciaTokens :: [Extractor]
 frecuenciaTokens = [ (\xs -> fromIntegral (cantAp t xs) / genericLength xs) | t <- tokens ]
 
 normalizarExtractor :: [Texto] -> Extractor -> Extractor
-normalizarExtractor = undefined
+normalizarExtractor ts e = (\xs -> e xs / maximo)
+	where maximo = maximum $ map abs (map e ts)
 
 extraerFeatures :: [Extractor] -> [Texto] -> Datos
 extraerFeatures = undefined
