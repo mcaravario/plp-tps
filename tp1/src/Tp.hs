@@ -32,7 +32,7 @@ cuentas :: Eq a => [a] -> [(Int, a)]
 cuentas l = [(cantAp x l, x) | x <- nub l]
 
 repeticionesPromedio :: Extractor
-repeticionesPromedio = undefined
+repeticionesPromedio xs = mean $ map (\x -> fromIntegral fst x) (cuentas c)
 
 tokens :: [Char]
 tokens = "_,)(*;-=>/.{}\"&:+#[]<|%!\'@?~^$` abcdefghijklmnopqrstuvwxyz0123456789"
