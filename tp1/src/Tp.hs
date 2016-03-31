@@ -23,7 +23,7 @@ split :: Eq a => a -> [a] -> [[a]]
 split c = foldl (\acum x -> if x == c then acum++[[]] else (init acum)++[(last acum)++[x]]) [[]]
 
 longitudPromedioPalabras :: Extractor
-longitudPromedioPalabras = undefined
+longitudPromedioPalabras t = mean $ map (genericLength) (split ' ' t)
 
 cuentas :: Eq a => [a] -> [(Int, a)]
 cuentas = undefined
