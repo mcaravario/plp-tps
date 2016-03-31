@@ -1,6 +1,5 @@
-# Trabajo Práctico 1 #
-## Programación Funcional ##
-### Reconociendo el paradigma reconociendo el paradigma ###
+# Trabajos Prácticos - Paradigmas de Lenguajes de Programación #
+## Ciencias de la Computación - UBA ##
 
 Integrantes:
 
