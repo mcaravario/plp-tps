@@ -29,7 +29,7 @@ cantAp :: Eq a => a -> [a] -> Int
 cantAp a l = length $ filter (==a) l
 
 cuentas :: Eq a => [a] -> [(Int, a)]
-cuentas l = [(cantAp x l, x) | x <- nub l] 
+cuentas l = [(cantAp x l, x) | x <- nub l]
 
 repeticionesPromedio :: Extractor
 repeticionesPromedio = undefined
