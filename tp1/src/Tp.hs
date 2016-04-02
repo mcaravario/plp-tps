@@ -1,6 +1,7 @@
 module Tp where
 
 import Data.List
+import Data.Function
 
 type Texto = String
 type Feature = Float
@@ -62,8 +63,12 @@ distEuclideana xs ys = norm $ zipWith (-) xs ys
 distCoseno :: Medida
 distCoseno xs ys = (prodInt xs ys) / (norm xs * norm ys)
 
+calcular_max_moda :: [(Float,Etiqueta)] -> Etiqueta
+calcular_max_moda ls = snd (maximumBy (compare `on` fst) (cuentas [snd x | x <- ls]))
+
 knn :: Int -> Datos -> [Etiqueta] -> Medida -> Modelo
-knn = undefined
+knn k datos es dist pto = calcular_max_moda (take k (sortBy (compare `on` fst) procesada))
+  where procesada = zip (map (\x  -> dist x pto) datos) es
 
 accuracy :: [Etiqueta] -> [Etiqueta] -> Float
 accuracy xs ys = fromIntegral (apariciones True (zipWith (==) xs ys)) / genericLength xs
