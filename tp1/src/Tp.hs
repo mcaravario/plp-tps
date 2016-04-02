@@ -47,11 +47,17 @@ normalizarExtractor ts e = (\xs -> e xs / maximo)
 extraerFeatures :: [Extractor] -> [Texto] -> Datos
 extraerFeatures es ts = [ [ e t | e <- map (normalizarExtractor ts) es ] | t <- ts ]
 
+prodInt :: [Float] -> [Float] -> Float
+prodInt xs ys = sum $ zipWith (*) xs ys
+
+norm :: [Float] -> Float
+norm xs = sqrt $ prodInt xs xs
+
 distEuclideana :: Medida
-distEuclideana = undefined
+distEuclideana xs ys = norm $ zipWith (-) xs ys
 
 distCoseno :: Medida
-distCoseno = undefined
+distCoseno xs ys = (prodInt xs ys) / (norm xs * norm ys)
 
 knn :: Int -> Datos -> [Etiqueta] -> Medida -> Modelo
 knn = undefined
