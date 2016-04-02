@@ -84,4 +84,14 @@ separarDatos ds es nparts part = (sinParticion part (ajustar ds),
 	      tampart = length ds `div` nparts
 
 nFoldCrossValidation :: Int -> Datos -> [Etiqueta] -> Float
-nFoldCrossValidation = undefined
+nFoldCrossValidation n ds es = mean accuracies
+	where accuracies = zipWith accuracy etiquetasCalculadas etiquetasEsperadas
+	      etiquetasEsperadas = etiquetasValidacion
+	      datosSeparados = map (separarDatos ds es n) [1..n]
+	      etiquetasCalculadas = zipWith map modelos datosValidacion
+	      modelos = map modelo datosSeparados
+	      modelo (dst, _, est, _) = knn 15 dst est distEuclideana
+	      datosValidacion = map datosVal datosSeparados
+	      etiquetasValidacion = map etiquetasVal datosSeparados
+	      datosVal (_, x, _, _) = x
+	      etiquetasVal (_, _, _, x) = x
