@@ -25,11 +25,11 @@ split c = foldl (\acum x -> if x == c then acum++[[]] else (init acum)++[(last a
 longitudPromedioPalabras :: Extractor
 longitudPromedioPalabras t = mean $ map (genericLength) (split ' ' t)
 
-cantAp :: Eq a => a -> [a] -> Int
-cantAp a l = length $ filter (==a) l
+apariciones :: Eq a => a -> [a] -> Int
+apariciones e xs = length $ filter (==e) xs
 
 cuentas :: Eq a => [a] -> [(Int, a)]
-cuentas l = [(cantAp x l, x) | x <- nub l]
+cuentas = map (\y -> (apariciones y xs, y))
 
 repeticionesPromedio :: Extractor
 repeticionesPromedio xs = mean $ map (\x -> fromIntegral (fst x)) (cuentas (split ' ' xs))
@@ -38,14 +38,17 @@ tokens :: [Char]
 tokens = "_,)(*;-=>/.{}\"&:+#[]<|%!\'@?~^$` abcdefghijklmnopqrstuvwxyz0123456789"
 
 frecuenciaTokens :: [Extractor]
-frecuenciaTokens = [ (\xs -> fromIntegral (cantAp t xs) / genericLength xs) | t <- tokens ]
+frecuenciaTokens = map (\t -> \xs -> frecuencia t xs) tokens
+	where frecuencia t xs = fromIntegral (apariciones t xs) / genericLength xs
 
 normalizarExtractor :: [Texto] -> Extractor -> Extractor
 normalizarExtractor ts e = (\xs -> e xs / maximo)
 	where maximo = maximum $ map abs (map e ts)
 
 extraerFeatures :: [Extractor] -> [Texto] -> Datos
-extraerFeatures es ts = [ [ e t | e <- map (normalizarExtractor ts) es ] | t <- ts ]
+extraerFeatures es ts = let normalizados = map (normalizarExtractor ts) es in
+	map (evaluar normalizados) ts
+	where evaluar fs = (\x -> map (\f -> f x) fs)
 
 prodInt :: [Float] -> [Float] -> Float
 prodInt xs ys = sum $ zipWith (*) xs ys
@@ -63,7 +66,7 @@ knn :: Int -> Datos -> [Etiqueta] -> Medida -> Modelo
 knn = undefined
 
 accuracy :: [Etiqueta] -> [Etiqueta] -> Float
-accuracy xs ys = (fromIntegral $ cantAp True (zipWith (==) xs ys)) / (genericLength xs)
+accuracy xs ys = fromIntegral (apariciones True (zipWith (==) xs ys)) / genericLength xs
 
 separarDatos :: Datos -> [Etiqueta] -> Int -> Int -> (Datos, Datos, [Etiqueta], [Etiqueta])
 separarDatos = undefined
