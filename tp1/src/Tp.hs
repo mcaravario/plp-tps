@@ -83,5 +83,22 @@ separarDatos ds es nparts part = (sinParticion part (ajustar ds),
 	      soloParticion p xs = take tampart (drop (tampart * (p - 1)) xs)
 	      tampart = length ds `div` nparts
 
+primero :: (a,b,c,d) -> a
+primero (x,y,z,w) = x
+
+segundo :: (a,b,c,d) -> b
+segundo (x,y,z,w) = y
+
+tercero :: (a,b,c,d) -> c
+tercero (x,y,z,w) = z
+
+cuarto :: (a,b,c,d) -> d
+cuarto (x,y,z,w) = w
+  
+calcularEtiquetas :: Int -> (Datos, Datos, [Etiqueta], [Etiqueta]) -> Medida -> [Etiqueta]
+calcularEtiquetas k x medida = (map (knn k (primero x) (tercero x) medida) (segundo x))
+
 nFoldCrossValidation :: Int -> Datos -> [Etiqueta] -> Float
-nFoldCrossValidation = undefined
+nFoldCrossValidation n datos es = mean aplicarKnn
+	where datosSeparados = [separarDatos datos es n p | p <- [1..n]]
+	      aplicarKnn = [accuracy (calcularEtiquetas 15 part distEuclideana) (cuarto part) | part <- datosSeparados]
