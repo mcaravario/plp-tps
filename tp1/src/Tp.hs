@@ -69,7 +69,14 @@ accuracy :: [Etiqueta] -> [Etiqueta] -> Float
 accuracy xs ys = fromIntegral (apariciones True (zipWith (==) xs ys)) / genericLength xs
 
 separarDatos :: Datos -> [Etiqueta] -> Int -> Int -> (Datos, Datos, [Etiqueta], [Etiqueta])
-separarDatos = undefined
+separarDatos ds es nparts part = (sinParticion part (ajustar ds),
+                                  soloParticion part (ajustar ds),
+                                  sinParticion part (ajustar es),
+                                  soloParticion part (ajustar es))
+	where ajustar = take (nparts * tampart)
+	      sinParticion p xs = (take (tampart * (p - 1)) xs) ++ (drop (tampart * p) xs)
+	      soloParticion p xs = take tampart (drop (tampart * (p - 1)) xs)
+	      tampart = length ds `div` nparts
 
 nFoldCrossValidation :: Int -> Datos -> [Etiqueta] -> Float
 nFoldCrossValidation = undefined
