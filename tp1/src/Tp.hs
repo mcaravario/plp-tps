@@ -63,7 +63,7 @@ knn :: Int -> Datos -> [Etiqueta] -> Medida -> Modelo
 knn = undefined
 
 accuracy :: [Etiqueta] -> [Etiqueta] -> Float
-accuracy = undefined
+accuracy xs ys = (fromIntegral $ cantAp True (zipWith (==) xs ys)) / (genericLength xs)
 
 separarDatos :: Datos -> [Etiqueta] -> Int -> Int -> (Datos, Datos, [Etiqueta], [Etiqueta])
 separarDatos = undefined
