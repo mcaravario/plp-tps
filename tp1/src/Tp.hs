@@ -67,7 +67,7 @@ calcular_max_moda :: [(Float,Etiqueta)] -> Etiqueta
 calcular_max_moda ls = snd (maximumBy (compare `on` fst) (cuentas [snd x | x <- ls]))
 
 knn :: Int -> Datos -> [Etiqueta] -> Medida -> Modelo
-knn k datos es dist pto = calcular_max_moda (take k (sortBy (compare `on` fst) procesada))
+knn k datos es dist pto = calcular_max_moda (take k (sort procesada))
   where procesada = zip (map (\x  -> dist x pto) datos) es
 
 accuracy :: [Etiqueta] -> [Etiqueta] -> Float
