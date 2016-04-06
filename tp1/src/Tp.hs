@@ -30,7 +30,7 @@ apariciones :: Eq a => a -> [a] -> Int
 apariciones e xs = length $ filter (==e) xs
 
 cuentas :: Eq a => [a] -> [(Int, a)]
-cuentas xs = map (\y -> (apariciones y xs, y)) xs
+cuentas xs = map (\y -> (apariciones y xs, y)) (nub xs)
 
 repeticionesPromedio :: Extractor
 repeticionesPromedio xs = mean $ map (\x -> fromIntegral (fst x)) (cuentas (split ' ' xs))
