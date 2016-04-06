@@ -33,18 +33,18 @@ cuentas :: Eq a => [a] -> [(Int, a)]
 cuentas xs = map (\y -> (apariciones y xs, y)) (nub xs)
 
 repeticionesPromedio :: Extractor
-repeticionesPromedio xs = mean $ map (\x -> fromIntegral (fst x)) (cuentas (split ' ' xs))
+repeticionesPromedio xs = mean $ map (fromIntegral.fst) (cuentas (split ' ' xs))
 
 tokens :: [Char]
 tokens = "_,)(*;-=>/.{}\"&:+#[]<|%!\'@?~^$` abcdefghijklmnopqrstuvwxyz0123456789"
 
 frecuenciaTokens :: [Extractor]
-frecuenciaTokens = map (\t -> \xs -> frecuencia t xs) tokens
+frecuenciaTokens = map frecuencia tokens
 	where frecuencia t xs = fromIntegral (apariciones t xs) / genericLength xs
 
 normalizarExtractor :: [Texto] -> Extractor -> Extractor
 normalizarExtractor ts e = (\xs -> e xs / maximo)
-	where maximo = maximum $ map abs (map e ts)
+	where maximo = maximum $ map (abs.e) ts
 
 extraerFeatures :: [Extractor] -> [Texto] -> Datos
 extraerFeatures es ts = let normalizados = map (normalizarExtractor ts) es in
