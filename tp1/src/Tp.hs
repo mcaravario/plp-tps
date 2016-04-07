@@ -21,7 +21,7 @@ mean :: [Float] -> Float
 mean xs = realToFrac (sum xs) / genericLength xs
 
 split :: Eq a => a -> [a] -> [[a]]
-split c yss = filter null (split' c yss)
+split c yss = filter (not . null) (split' c yss)
   where split' c xss = foldr (\x rec -> if x==c then agregarVacia rec else agregarAlPrimero x rec) [[]] xss
         agregarVacia xss = [] : xss
         agregarAlPrimero x xss = (x : head xss) : tail xss
