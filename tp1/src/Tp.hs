@@ -22,37 +22,37 @@ mean xs = realToFrac (sum xs) / genericLength xs
 
 split :: Eq a => a -> [a] -> [[a]]
 split c yss = filter (not . null) (split' c yss)
-  where split' c xss = foldr (\x rec -> if x==c then agregarVacia rec else agregarAlPrimero x rec) [[]] xss
-        agregarVacia xss = [] : xss
-        agregarAlPrimero x xss = (x : head xss) : tail xss
+	where split' c xss = foldr (\x rec -> if x==c then agregarVacia rec else agregarAlPrimero x rec) [[]] xss
+	      agregarVacia xss = [] : xss
+	      agregarAlPrimero x xss = (x : head xss) : tail xss
 
 longitudPromedioPalabras :: Extractor
 longitudPromedioPalabras texto = mean $ map genericLength palabrasSeparadas
-  where palabrasSeparadas = split ' ' texto
+	where palabrasSeparadas = split ' ' texto
 
 apariciones :: Eq a => a -> [a] -> Int
 apariciones elem xs = length $ filter (==elem) xs
 
 cuentas :: Eq a => [a] -> [(Int, a)]
 cuentas xs = map cantidadApariciones (nub xs)
-  where cantidadApariciones = \y -> (apariciones y xs, y)
+	where cantidadApariciones = \y -> (apariciones y xs, y)
 
 repeticionesPromedio :: Extractor
-repeticionesPromedio xs = mean $ map cantidad palabrasContadas 
-  where cantidad = fromIntegral . fst
-        palabrasContadas = cuentas (split ' ' xs)
+repeticionesPromedio xs = mean $ map cantidad palabrasContadas
+	where cantidad = fromIntegral . fst
+	      palabrasContadas = cuentas (split ' ' xs)
 
 tokens :: [Char]
 tokens = "_,)(*;-=>/.{}\"&:+#[]<|%!\'@?~^$` abcdefghijklmnopqrstuvwxyz0123456789"
 
 frecuenciaTokens :: [Extractor]
 frecuenciaTokens = map frecuencia tokens
-  where frecuencia token texto = fromIntegral (apariciones token texto) / genericLength texto 
+	where frecuencia token texto = fromIntegral (apariciones token texto) / genericLength texto
 
 normalizarExtractor :: [Texto] -> Extractor -> Extractor
 normalizarExtractor textos extractor = \xs -> extractor xs / maximo
-  where maximo = maximum $ map (abs . extractor) textos
-              
+	where maximo = maximum $ map (abs . extractor) textos
+
 extraerFeatures :: [Extractor] -> [Texto] -> Datos
 extraerFeatures es ts = let normalizados = map (normalizarExtractor ts) es in
 	map (evaluar normalizados) ts
@@ -71,22 +71,22 @@ distCoseno :: Medida
 distCoseno xs ys = (prodInt xs ys) / (norm xs * norm ys)
 
 calcularEtiquetaModa :: [(Float,Etiqueta)] -> Etiqueta
-calcularEtiquetaModa ls = snd (maximumBy compararPorPrimero cantidadEtiquetas) 
-  where cantidadEtiquetas = cuentas $ map snd ls
-        compararPorPrimero = compare `on` fst
+calcularEtiquetaModa ls = snd (maximumBy compararPorPrimero cantidadEtiquetas)
+	where cantidadEtiquetas = cuentas $ map snd ls
+	      compararPorPrimero = compare `on` fst
 
 knn :: Int -> Datos -> [Etiqueta] -> Medida -> Modelo
 knn k datos etiquetas distancia punto = calcularEtiquetaModa kMasCercanas
-  where kMasCercanas = take k (sort distanciaPorEtiqueta)
-        distanciaPorEtiqueta = zip listaDistancias etiquetas
-        listaDistancias = map distanciasAlPunto datos
-        distanciasAlPunto = distancia punto
+	where kMasCercanas = take k (sort distanciaPorEtiqueta)
+	      distanciaPorEtiqueta = zip listaDistancias etiquetas
+	      listaDistancias = map distanciasAlPunto datos
+	      distanciasAlPunto = distancia punto
 
 accuracy :: [Etiqueta] -> [Etiqueta] -> Float
 accuracy xs ys = fromIntegral cantidadAciertos / genericLength xs
-  where cantidadAciertos = apariciones True aciertos
-        aciertos = zipWith (==) xs ys
-    
+	where cantidadAciertos = apariciones True aciertos
+	      aciertos = zipWith (==) xs ys
+
 separarDatos :: Datos -> [Etiqueta] -> Int -> Int -> (Datos, Datos, [Etiqueta], [Etiqueta])
 separarDatos ds es nparts part = (sinParticion part (ajustarTamanio ds),
                                   soloParticion part (ajustarTamanio ds),
@@ -108,7 +108,7 @@ tercero (x,y,z,w) = z
 
 cuarto :: (a,b,c,d) -> d
 cuarto (x,y,z,w) = w
-  
+
 calcularEtiquetas :: Int -> (Datos, Datos, [Etiqueta], [Etiqueta]) -> Medida -> [Etiqueta]
 calcularEtiquetas k x medida = (map (knn k (primero x) (tercero x) medida) (segundo x))
 
