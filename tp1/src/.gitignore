@@ -1,5 +1,4 @@
-Tp.hi
-Tp.o
+*.hi
+*.o
 run
-run.hi
-run.o
+tests
