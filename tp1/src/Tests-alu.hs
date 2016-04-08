@@ -17,7 +17,9 @@ allTests = test [
 	"repeticionesPromedio" ~: testRepeticionesPromedio,
 	"frecuenciaTokens" ~: testFrecuenciaTokens,
 	"normalizarExtractor" ~: testNormalizarExtractor,
-	"extraerFeatures" ~: testExtraerFeatures
+	"extraerFeatures" ~: testExtraerFeatures,
+  "distanciaEuclideana" ~: testDistEuclideana,
+  "distanciaCoseno" ~: testDistCoseno
   ]
 
 testsSplit = test [
@@ -61,8 +63,20 @@ testNormalizarExtractor = test [
 	]
 
 testExtraerFeatures = test [
-    extraerFeatures [longitudPromedioPalabras, repeticionesPromedio] textos_a ~?= [[0.33333334,0.6666667],[0.12962963,1.0],[1.0,0.6666667]],
+  extraerFeatures [longitudPromedioPalabras, repeticionesPromedio] textos_a ~?= [[0.33333334,0.6666667],[0.12962963,1.0],[1.0,0.6666667]],
   extraerFeatures [] textos_a ~?= [[],[],[]],
   extraerFeatures [genericLength] [] ~?= [],
   extraerFeatures [genericLength] ["a","ab","abc"] ~?= [[1/3], [2/3], [3/3]]
+  ]
+
+testDistEuclideana = test [
+  distEuclideana [1.0,0.75,0.8125] [0.75,1.0,0.5] ~?= 0.47186464,
+  distEuclideana [-5.0,-2.5,-0.1] [-2.3,0,3.4] ~?= 5.078386,
+  distEuclideana [-3.0,-2.5,-0.1] [-2.3,0.3]  ~?= 2.886174
+  ]
+
+testDistCoseno = test [
+  distCoseno [0,3,4] [0,-3,-4] ~?= -1.0,
+  distCoseno [-1.3,-10] [-0.1, -0.6] ~?= 0.99935657,
+  distCoseno [3.0, -2.1] [-5.2, 0.1] ~?= -0.8301066
   ]
