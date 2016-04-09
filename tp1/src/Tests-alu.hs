@@ -24,6 +24,7 @@ allTests = test [
 
 testsSplit = test [
 	split ',' ",PLP,"        ~?= ["PLP"],
+	split ',' ",,P,,L,,P,,"  ~?= ["P", "L", "P"],
 	split ',' " ,PLP, "      ~?= [" ","PLP"," "],
 	split 'p' "PLP,PLP"      ~?= ["PLP,PLP"],
 	split ' ' "Hola  Mundo!" ~?= ["Hola","Mundo!"]
