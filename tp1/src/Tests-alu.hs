@@ -38,7 +38,10 @@ allTests = test [
 	"normalizarExtractor"      ~: testNormalizarExtractor,
 	"extraerFeatures"          ~: testExtraerFeatures,
 	"distanciaEuclideana"      ~: testDistEuclideana,
-	"distanciaCoseno"          ~: testDistCoseno
+	"distanciaCoseno"          ~: testDistCoseno,
+	"knn"                      ~: testKNN,
+	"separarDatos"             ~: testSepararDatos,
+	"accuracy"                 ~: testAccuracy
 	]
 
 testsSplit = test [
@@ -99,4 +102,28 @@ testDistCoseno = test [
 	distCoseno [-1.3, -10] [-0.1, -0.6]        ||~= 0.99935657,
 	distCoseno [3.0, -2.1] [-5.2, 0.1]         ||~= -0.8301066,
 	distCoseno [-0.5, 0.5 * sqrt 3] [1.0, 0.0] ||~= -0.5
+	]
+
+knn_a = knn 2 [[0, 1], [0, 2], [2, 1], [1, 1], [2, 3]] ["i", "i", "f", "f", "i"] distEuclideana
+knn_b = knn 5 [[0, 1], [0, 2], [2, 1], [1, 1], [2, 3]] ["i", "i", "f", "f", "i"] distEuclideana
+knn_c = knn 1 [[0, 1], [0, 2], [2, 1], [1, 1], [2, 3]] ["i", "i", "f", "f", "i"] distEuclideana
+testKNN = test [
+	knn_a [1, 1] ~?= "f",
+	knn_b [1, 1] ~?= "i",
+	knn_c [0, 1] ~?= "i"
+	]
+
+separarDatos_a = separarDatos [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7]] ["1", "2", "3", "4", "5", "6", "7"]
+separarDatos_b = separarDatos [[1, 1], [2, 2], [3, 3], [4, 4]] ["1", "2", "3", "4"]
+separarDatos_c = separarDatos [[1, 1]] ["1"]
+testSepararDatos = test [
+	separarDatos_a 3 2 ~?= ([[1, 1], [2, 2], [5, 5], [6, 6]], [[3, 3], [4, 4]], ["1", "2", "5", "6"], ["3", "4"]),
+	separarDatos_b 4 3 ~?= ([[1, 1], [2, 2], [4, 4]], [[3, 3]], ["1", "2", "4"], ["3"]),
+	separarDatos_c 1 1 ~?= ([], [[1, 1]], [], ["1"])
+	]
+
+testAccuracy = test [
+	accuracy ["f", "f", "i", "i", "f"] ["i", "f", "i", "f", "f"] ~?= 0.6,
+	accuracy ["i", "f", "i", "f", "f"] ["i", "f", "i", "f", "f"] ~?= 1.0,
+	accuracy ["?", "?", "?", "?", "?"] ["i", "f", "i", "f", "f"] ~?= 0.0
 	]
