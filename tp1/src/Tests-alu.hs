@@ -57,16 +57,12 @@ testsCuentas = test [
 	]
 
 testLongitudPromedio = test [
-	longitudPromedioPalabras ""                                ~?= 0.0,
-	longitudPromedioPalabras "       "                         ~?= 0.0,
 	longitudPromedioPalabras "a-bc,def.g"                      ~?= 10.0,
 	longitudPromedioPalabras "a-bc def.g"                      ~?= 4.5,
 	longitudPromedioPalabras "Este test tiene palabras $$++$$" ~?= 5.4
 	]
 
 testRepeticionesPromedio = test [
-	repeticionesPromedio ""                                   ~?= 0.0,
-	repeticionesPromedio "    "                               ~?= 0.0,
 	repeticionesPromedio "a-a b-b a-a-a"                      ~?= 1.0,
 	repeticionesPromedio "lalala $$++$$ lalala lalala $$++$$" ~?= 2.5,
 	map repeticionesPromedio texto_a_normalizar               ~?= [5/3, 2.0, 1.0]
