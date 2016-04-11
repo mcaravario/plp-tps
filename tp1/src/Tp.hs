@@ -109,13 +109,18 @@ tercero (x,y,z,w) = z
 cuarto :: (a,b,c,d) -> d
 cuarto (x,y,z,w) = w
 
-calcularEtiquetas :: Int -> (Datos, Datos, [Etiqueta], [Etiqueta]) -> Medida -> [Etiqueta]
-calcularEtiquetas k x medida = map aplicarKnn (segundo x)
-  where aplicarKnn = knn k (primero x) (tercero x) medida
+calcularEtiquetas :: (Datos, Datos, [Etiqueta], [Etiqueta]) -> [Etiqueta]
+calcularEtiquetas x = map aplicarKnn datosValidacion
+  where aplicarKnn = knn 15 datosEntrenamiento etiquetasEntrenamiento distEuclideana
+        datosValidacion = segundo x
+        datosEntrenamiento = primero x
+        etiquetasEntrenamiento = tercero x
+
 
 nFoldCrossValidation :: Int -> Datos -> [Etiqueta] -> Float
 nFoldCrossValidation n datos es = mean resultadosIntermedios
-  where resultadosIntermedios = [accuracy (etiquetasEntrenamiento particion) (cuarto particion) |
+  where resultadosIntermedios = [accuracy (etiquetasEntrenamiento particion) (etiquetasValidacion particion) |
                                 particion <- generarParticiones]
-        etiquetasEntrenamiento particion = calcularEtiquetas 15 particion distEuclideana
+        etiquetasEntrenamiento particion = calcularEtiquetas particion
         generarParticiones = [separarDatos datos es n p | p <- [1..n]]
+        etiquetasValidacion p = cuarto p
