@@ -127,3 +127,10 @@ testAccuracy = test [
 	accuracy ["i", "f", "i", "f", "f"] ["i", "f", "i", "f", "f"] ~?= 1.0,
 	accuracy ["?", "?", "?", "?", "?"] ["i", "f", "i", "f", "f"] ~?= 0.0
 	]
+
+datos_a = [[1.0,0.0],[0.0,1.0],[1.0,1.0],[0.0,0.0]]
+etiquetas_a = replicate 4 "i"
+
+testNCrossFoldValidation = test [
+	nFoldCrossValidation 4 datos_a etiquetas_a ~?= 1.0
+	]
