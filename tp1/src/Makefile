@@ -7,10 +7,10 @@ TESTS_SOURCE=Tests-alu.hs Tp.hs
 all: run tests check-tests
 
 tests: $(TESTS_SOURCE)
-	$(GHC) --make $(TESTS_SOURCE) -o $@
+	$(GHC) -O1 --make $(TESTS_SOURCE) -o $@
 
 run: $(SOURCE)
-	$(GHC) --make $(SOURCE) -o $@
+	$(GHC) -O1 --make $(SOURCE) -o $@
 
 run-tp: run
 	./run
