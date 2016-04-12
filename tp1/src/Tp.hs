@@ -99,13 +99,12 @@ separarDatos ds es nparts part = (sinParticion part (ajustarTamanio ds),
 
 calcularEtiquetas :: (Datos, Datos, [Etiqueta], [Etiqueta]) -> [Etiqueta]
 calcularEtiquetas (datosEntrenamiento, datosValidacion, etiquetasEntrenamiento, _) = map aplicarKnn datosValidacion
-  where aplicarKnn = knn 15 datosEntrenamiento etiquetasEntrenamiento distEuclideana
+	where aplicarKnn = knn 15 datosEntrenamiento etiquetasEntrenamiento distEuclideana
 
 
 nFoldCrossValidation :: Int -> Datos -> [Etiqueta] -> Float
 nFoldCrossValidation n datos es = mean resultadosIntermedios
-  where resultadosIntermedios = [accuracy (etiquetasEntrenamiento particion) (etiquetasValidacion particion) |
-                                particion <- generarParticiones]
-        etiquetasEntrenamiento particion = calcularEtiquetas particion
-        generarParticiones = [separarDatos datos es n p | p <- [1..n]]
-        etiquetasValidacion (_,_,_,es) = es
+	where resultadosIntermedios = [accuracy (etiquetasEntrenamiento particion) (etiquetasValidacion particion) | particion <- generarParticiones]
+	      etiquetasEntrenamiento particion = calcularEtiquetas particion
+	      generarParticiones = [separarDatos datos es n p | p <- [1..n]]
+	      etiquetasValidacion (_, _, _, es) = es
