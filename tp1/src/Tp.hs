@@ -103,8 +103,8 @@ calcularEtiquetas (datosEntrenamiento, datosValidacion, etiquetasEntrenamiento, 
 
 
 nFoldCrossValidation :: Int -> Datos -> [Etiqueta] -> Float
-nFoldCrossValidation n datos es = mean resultadosIntermedios
+nFoldCrossValidation n datos etiquetas = mean resultadosIntermedios
 	where resultadosIntermedios = [accuracy (etiquetasEntrenamiento particion) (etiquetasValidacion particion) | particion <- generarParticiones]
 	      etiquetasEntrenamiento particion = calcularEtiquetas particion
-	      generarParticiones = [separarDatos datos es n p | p <- [1..n]]
+	      generarParticiones = [separarDatos datos etiquetas n p | p <- [1..n]]
 	      etiquetasValidacion (_, _, _, es) = es
