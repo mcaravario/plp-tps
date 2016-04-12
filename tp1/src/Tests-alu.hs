@@ -41,7 +41,8 @@ allTests = test [
 	"distanciaCoseno"          ~: testDistCoseno,
 	"knn"                      ~: testKNN,
 	"separarDatos"             ~: testSepararDatos,
-	"accuracy"                 ~: testAccuracy
+	"accuracy"                 ~: testAccuracy,
+	"nFoldCrossValidation"     ~: testNFoldCrossValidation
 	]
 
 testsSplit = test [
@@ -123,14 +124,37 @@ testSepararDatos = test [
 	]
 
 testAccuracy = test [
-	accuracy ["f", "f", "i", "i", "f"] ["i", "f", "i", "f", "f"] ~?= 0.6,
-	accuracy ["i", "f", "i", "f", "f"] ["i", "f", "i", "f", "f"] ~?= 1.0,
-	accuracy ["?", "?", "?", "?", "?"] ["i", "f", "i", "f", "f"] ~?= 0.0
+	accuracy ["f", "f", "i", "i", "f"] ["i", "f", "i", "f", "f"] ||~= 0.6,
+	accuracy ["i", "f", "i", "f", "f"] ["i", "f", "i", "f", "f"] ||~= 1.0,
+	accuracy ["?", "?", "?", "?", "?"] ["i", "f", "i", "f", "f"] ||~= 0.0
 	]
 
-datos_a = [[1.0,0.0],[0.0,1.0],[1.0,1.0],[0.0,0.0]]
-etiquetas_a = replicate 4 "i"
-
-testNCrossFoldValidation = test [
-	nFoldCrossValidation 4 datos_a etiquetas_a ~?= 1.0
+nfcv_datos_a = [
+	[1, 4], [2, 4], [3, 4], [4, 4], [5, 4],
+	[1, 3], [2, 3], [3, 3], [4, 3], [5, 3],
+	[1, 2], [2, 2], [3, 2], [4, 2], [5, 2],
+	[1, 1], [2, 1], [3, 1], [4, 1], [5, 1]
+	]
+nfcv_datos_d = [
+	[1, 5], [2, 5], [3, 5], [4, 5], [5, 5],
+	[1, 4], [2, 4], [3, 4], [4, 4], [5, 4],
+	[1, 3], [2, 3], [3, 3], [4, 3], [5, 3],
+	[1, 2], [2, 2], [3, 2], [4, 2], [5, 2],
+	[1, 1], [2, 1], [3, 1], [4, 1], [5, 1]
+	]
+nfcv_etiquetas_a = replicate 20 "i"
+nfcv_etiquetas_b = concat $ replicate 2 ((replicate 5 "i") ++ (replicate 5 "f"))
+nfcv_etiquetas_c = concat $ [["f", "i"] | _ <- [1..10]]
+nfcv_etiquetas_d = [
+	"i", "i", "f", "i", "i", -- 0.2
+	"i", "f", "f", "f", "i", -- 0.6
+	"f", "f", "f", "f", "f", -- 1.0
+	"i", "f", "f", "f", "i", -- 0.6
+	"i", "i", "f", "i", "i"  -- 0.2
+	]
+testNFoldCrossValidation = test [
+	nFoldCrossValidation 4 nfcv_datos_a nfcv_etiquetas_a ||~= 1,
+	nFoldCrossValidation 4 nfcv_datos_a nfcv_etiquetas_b ||~= 0,
+	nFoldCrossValidation 4 nfcv_datos_a nfcv_etiquetas_c ||~= 0.4,
+	nFoldCrossValidation 5 nfcv_datos_d nfcv_etiquetas_d ||~= (0.2 + 0.6 + 1.0 + 0.6 + 0.2) / 5
 	]
