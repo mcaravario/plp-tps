@@ -97,24 +97,9 @@ separarDatos ds es nparts part = (sinParticion part (ajustarTamanio ds),
 	      soloParticion p xs = take tamanioParticion (drop (tamanioParticion * (p - 1)) xs)
 	      tamanioParticion = length ds `div` nparts
 
-primero :: (a,b,c,d) -> a
-primero (x,y,z,w) = x
-
-segundo :: (a,b,c,d) -> b
-segundo (x,y,z,w) = y
-
-tercero :: (a,b,c,d) -> c
-tercero (x,y,z,w) = z
-
-cuarto :: (a,b,c,d) -> d
-cuarto (x,y,z,w) = w
-
 calcularEtiquetas :: (Datos, Datos, [Etiqueta], [Etiqueta]) -> [Etiqueta]
-calcularEtiquetas x = map aplicarKnn datosValidacion
+calcularEtiquetas (datosEntrenamiento, datosValidacion, etiquetasEntrenamiento, _) = map aplicarKnn datosValidacion
   where aplicarKnn = knn 15 datosEntrenamiento etiquetasEntrenamiento distEuclideana
-        datosValidacion = segundo x
-        datosEntrenamiento = primero x
-        etiquetasEntrenamiento = tercero x
 
 
 nFoldCrossValidation :: Int -> Datos -> [Etiqueta] -> Float
@@ -123,4 +108,4 @@ nFoldCrossValidation n datos es = mean resultadosIntermedios
                                 particion <- generarParticiones]
         etiquetasEntrenamiento particion = calcularEtiquetas particion
         generarParticiones = [separarDatos datos es n p | p <- [1..n]]
-        etiquetasValidacion p = cuarto p
+        etiquetasValidacion (_,_,_,es) = es
