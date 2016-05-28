@@ -57,3 +57,8 @@ juntar_con(X,J,Y) :- juntar_con1(X,J,Y).
 % palabras(+S,?P)
 palabras(S,P) :- juntar_con(P,espacio,S).
 
+% Ejercicio 4
+% asignar_var(?A,?L,-M)
+asignar_var(A,[],[(A,_)]).
+asignar_var(A,[(A,Z)|Xs],[(A,Z)|Xs]).
+asignar_var(A,[X|Xs],[X|Zs]) :- asignar_var(A,Xs,Zs).
