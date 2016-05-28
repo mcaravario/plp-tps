@@ -62,3 +62,25 @@ palabras(S,P) :- juntar_con(P,espacio,S).
 asignar_var(A,[],[(A,_)]).
 asignar_var(A,[(A,Z)|Xs],[(A,Z)|Xs]).
 asignar_var(A,[X|Xs],[X|Zs]) :- asignar_var(A,Xs,Zs).
+
+% Ejercicio 5
+
+% asignar_lista_var(+Xs,-Zs)
+%    Instancia en Zs el mapa de variables libres por cada atomos en Xs
+asignar_lista_var([], []).
+asignar_lista_var([X|Xs], Zs) :- asignar_lista_var(Xs, Ps), asignar_var(X, Ps, Zs).
+
+
+% variables_libres(+Xs,+As,-Ys)
+%    Instancia en Yss la lista (en el mismo orden que en Xs) que por cada atomo 
+%    la variable libre que le corresponde en el mapeo As
+variables_libres([],_,[]).
+variables_libres([X|Xs], As, [Z|Ys]) :- member((X,Z),As), variables_libres(Xs,As,Ys).
+
+% variables_libres2(+Xss,+As,-Yss)
+%    Idem variables_libres2 pero con lista de listas
+variables_libres2([],_,[]).
+variables_libres2([Xs|Xss], As, [Rs|Rss]) :- variables_libres(Xs, As, Rs), variables_libres2(Xss,As,Rss).
+
+% palabras_con_variables(+Xss,-Vss)
+palabras_con_variables(Xss,Vss) :- juntar_con1(Xss,espacio,L), asignar_lista_var(L, As), fun(Xss,As,Vss).
