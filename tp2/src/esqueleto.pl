@@ -41,9 +41,17 @@ ej(3, [rombo, cuadrado, perro, cuadrado, sol, luna, triangulo, estrella, arbol, 
 diccionario_lista(L) :- diccionario(X), string_codes(X,L). 
 
 % Ejercicio 2
-% juntar_con(+Xs, ?J, ?R)
-juntar_con([J],_,J).
-juntar_con([H|T], J, R) :- append(H,[J],R1), juntar_con(T,J,R2), append(R1,R2,R).
+% juntar_con(?Xs, ?J, ?R)
+juntar_con1([J],_,J).
+juntar_con1([H|T], J, R) :- append(H,[J],R1), juntar_con1(T,J,R2), append(R1,R2,R).
+
+juntar_con2([[]],_,[]).
+juntar_con2([[]|Yss],J,[J|Xs]) :- juntar_con2(Yss,J,Xs).
+juntar_con2([Ys|Yss],J,[X|Xs]) :- juntar_con2([Zs|Yss],J,Xs), append([X],Zs,Ys).
+
+juntar_con(X,J,Y) :- var(X), juntar_con2(X,J,Y).
+juntar_con(X,J,Y) :- juntar_con1(X,J,Y).
+
 
 % Ejercicio 3
 % palabras(+S,?P)
