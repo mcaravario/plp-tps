@@ -55,4 +55,5 @@ juntar_con(X,J,Y) :- juntar_con1(X,J,Y).
 
 % Ejercicio 3
 % palabras(+S,?P)
+palabras(S,P) :- juntar_con(P,espacio,S).
 
