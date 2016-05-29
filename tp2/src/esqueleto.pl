@@ -90,7 +90,7 @@ palabras_con_variables(Xss,Vss) :- juntar_con1(Xss,espacio,L), asignar_lista_var
 
 % sinRepetidos(+Ls,-Ss)
 sinRepetidos([],[]).
-sinRepetidos([X|Xss],[X|Zs]) :- sinRepetidos(Xss,Zs), quitar(X,Zs).
+sinRepetidos([X|Xss],[X|Zs]) :- sinRepetidos(Xss,Rs), quitar(X,Rs,Zs).
 
 % cantDistintos(+L,-N)
 cant_distintos(L,N) :- sinRepetidos(L,L2), length(L2,N).
