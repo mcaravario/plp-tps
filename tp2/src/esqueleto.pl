@@ -84,3 +84,13 @@ variables_libres2([Xs|Xss], As, [Rs|Rss]) :- variables_libres(Xs, As, Rs), varia
 
 % palabras_con_variables(+Xss,-Vss)
 palabras_con_variables(Xss,Vss) :- juntar_con1(Xss,espacio,L), asignar_lista_var(L, As), fun(Xss,As,Vss).
+
+
+% Ejercicio 7
+
+% sinRepetidos(+Ls,-Ss)
+sinRepetidos([],[]).
+sinRepetidos([X|Xss],[X|Zs]) :- sinRepetidos(Xss,Zs), quitar(X,Zs).
+
+% cantDistintos(+L,-N)
+cant_distintos(L,N) :- sinRepetidos(L,L2), length(L2,N).
