@@ -106,8 +106,8 @@ incluido_en_dicc_ascii(N, [M|Ms]) :- N >= 1, diccionario_lista(M), N2 is N-1,
 
 % descifrar(+S, ?M)
 descifrar(S,M) :- palabras(S,P), palabras_con_variables(P,V), length(P,Z),
-				  incluido_en_dicc_ascii(Z,R), V=R,
-				  juntar_con(R,32,R2), string_codes(M,R2).
+				  incluido_en_dicc_ascii(Z,V),
+				  juntar_con(V,32,R), string_codes(M,R).
 
 % Ejercicio 9
 % Genera todas posibles formas de insertar espacios en la primer lista
