@@ -94,3 +94,18 @@ sinRepetidos([X|Xss],[X|Zs]) :- sinRepetidos(Xss,Rs), quitar(X,Rs,Zs).
 
 % cantDistintos(+L,-N)
 cant_distintos(L,N) :- sinRepetidos(L,L2), length(L2,N).
+
+% Ejercicio 8
+
+%incluido_en_dicc_ascii genera todas las posibles listas que contengan palabras del diccionario (su secuencia de numeros ascii) y
+% que sean de longitud N.
+% incluido(+n,?L)
+incluido_en_dicc_ascii(0, []).
+incluido_en_dicc_ascii(N, [M|Ms]) :- N >= 1, diccionario_lista(M), N2 is N-1, 
+									 incluido_en_dicc_ascii(N2,Ms).
+
+% descifrar(+S, ?M)
+descifrar([],[]).
+descifrar(S,M) :- palabras(S,P), palabras_con_variables(P,V), length(P,Z),
+				  incluido_en_dicc_ascii(Z,R), V=R,
+				  juntar_con(R,32,R2), string_codes(M,R2).
