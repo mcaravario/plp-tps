@@ -83,7 +83,7 @@ variables_libres2([],_,[]).
 variables_libres2([Xs|Xss], As, [Rs|Rss]) :- variables_libres(Xs, As, Rs), variables_libres2(Xss,As,Rss).
 
 % palabras_con_variables(+Xss,-Vss)
-palabras_con_variables(Xss,Vss) :- juntar_con1(Xss,espacio,L), asignar_lista_var(L, As), fun(Xss,As,Vss).
+palabras_con_variables(Xss,Vss) :- juntar_con1(Xss,espacio,L), asignar_lista_var(L, As), variables_libres2(Xss,As,Vss), !.
 
 
 % Ejercicio 7
