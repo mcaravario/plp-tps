@@ -49,7 +49,7 @@ juntar_con2([[]],_,[]).
 juntar_con2([[]|Yss],J,[J|Xs]) :- juntar_con2(Yss,J,Xs).
 juntar_con2([Ys|Yss],J,[X|Xs]) :- juntar_con2([Zs|Yss],J,Xs), append([X],Zs,Ys).
 
-juntar_con(X,J,Y) :- var(X), juntar_con2(X,J,Y).
+juntar_con(X,J,Y) :- var(X), juntar_con2(X,J,Y), !.
 juntar_con(X,J,Y) :- juntar_con1(X,J,Y).
 
 
@@ -111,6 +111,7 @@ descifrar(S,M) :- palabras(S,P), palabras_con_variables(P,V), length(P,Z),
 
 % Ejercicio 9
 % Genera todas posibles formas de insertar espacios en la primer lista
+
 % agregar_espacios(+L, ?R)
 agregar_espacios([],[]).
 agregar_espacios([L|Ls],R) :- append([L],[espacio],L1), agregar_espacios(Ls,R1), append(L1,R1,R).
@@ -118,3 +119,26 @@ agregar_espacios([L|Ls],R) :- agregar_espacios(Ls,R1), append([L],R1,R).
 
 % descifrar_sin_espacios(+S,?M)
 descifrar_sin_espacios(S,M) :- agregar_espacios(S,R), descifrar(R,M).
+
+% Ejercicio 10
+suma_lista([],0).
+suma_lista([L|LS],S) :- suma_lista(LS,S1), S is S1+L.
+
+potencia(_,0,1) :- !.
+potencia(X,Y,Z) :- Y1 is Y - 1, potencia(X,Y1,Z1), Z is Z1*X.
+
+sumar_palabras([],0).
+sumar_palabras([L|LSS], S) :- length(L,L1),sumar_palabras(LSS,S1), S is L1+S1.
+
+promedio_longitudes(LSS,P) :- length(LSS,L), sumar_palabras(LSS,S), P is S / L.
+
+calcular_resta_al_cuadrado([],_,[]).
+calcular_resta_al_cuadrado([L|LS], P, [R|RS]) :- length(L,L1), RESTA is L1-P, potencia(RESTA,2,R),
+                                            calcular_resta_al_cuadrado(LS,P,RS).
+
+desviacion(R,D) :- string_codes(R,C), juntar_con(LSS,32,C), promedio_longitudes(LSS,PR), 
+                  calcular_resta_al_cuadrado(LSS,PR,L), suma_lista(L,SUM), length(LSS,N), DIV is SUM / N, 
+                  D is sqrt(DIV). 
+
+mensajes_mas_parejos(S,M) :- descifrar_sin_espacios(S,M), desviacion(M,D1), not((descifrar_sin_espacios(S,R2),
+desviacion(R2,D2), D1 > D2)).
