@@ -85,6 +85,12 @@ variables_libres2([Xs|Xss], As, [Rs|Rss]) :- variables_libres(Xs, As, Rs), varia
 % palabras_con_variables(+Xss,-Vss)
 palabras_con_variables(Xss,Vss) :- juntar_con1(Xss,espacio,L), asignar_lista_var(L, As), variables_libres2(Xss,As,Vss), !.
 
+% Ejercicio 6
+
+% quitar(+X,+L,-R)
+quitar(_,[],[]).
+quitar(X,[L|Ls],Rs) :- X == L, quitar(X,Ls,Rs).
+quitar(X,[L|Ls],[L|Rs]) :- X \== L, quitar(X,Ls,Rs).
 
 % Ejercicio 7
 
