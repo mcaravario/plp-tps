@@ -63,7 +63,7 @@ palabras(S,P) :- juntar_con(P,espacio,S), !.
 % asignar_var(?A,?L,-M)
 asignar_var(A,[],[(A,_)]).
 asignar_var(A,[(A,Z)|Xs],[(A,Z)|Xs]).
-asignar_var(A,[X|Xs],[X|Zs]) :- asignar_var(A,Xs,Zs).
+asignar_var(A,[(X,V)|Xs],[(X,V)|Zs]) :- X \= A, asignar_var(A,Xs,Zs).
 
 % Ejercicio 5
 
@@ -103,7 +103,7 @@ variables_libres2([],_,[]).
 variables_libres2([Xs|Xss], As, [Rs|Rss]) :- variables_libres(Xs, As, Rs), variables_libres2(Xss,As,Rss).
 
 % palabras_con_variables(+Xss,-Vss)
-palabras_con_variables(Xss,Vss) :- juntar_con1(Xss,espacio,L), asignar_lista_var(L, As), variables_libres2(Xss,As,Vss), !.
+palabras_con_variables(Xss,Vss) :- palabras(L,Xss), asignar_lista_var(L, As), variables_libres2(Xss,As,Vss).
 
 % Ejercicio 6
 
