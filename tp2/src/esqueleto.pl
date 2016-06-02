@@ -54,7 +54,9 @@ juntar_con(X,J,Y) :- juntar_con1(X,J,Y).
 
 
 % Ejercicio 3
-% palabras(+S,?P)
+% palabras(?S,?P)
+% 
+% palabras es reversible porque juntar_con es reversible
 palabras(S,P) :- juntar_con(P,espacio,S), !.
 
 % Ejercicio 4
@@ -66,7 +68,15 @@ asignar_var(A,[X|Xs],[X|Zs]) :- asignar_var(A,Xs,Zs).
 % Ejercicio 5
 
 % asignar_lista_var(+Xs,-Zs)
-%    Instancia en Zs el mapa de variables libres por cada atomos en Xs
+%    Instancia en Zs el mapa de variables libres por cada atomo en Xs
+%    
+%    Ejemplos:
+%       ?- asignar_lista_var([rombo,cuadrado,circulo],M).
+%       M=[(circulo,_G3300),(cuadrado,_G3309),(rombo,_G3321)];
+%       false.
+%       ?- asignar_lista_var([rombo,cuadrado,rombo],M).
+%       M=[(rombo,_G1440),(cuadrado,_G1452)];
+%       false.
 asignar_lista_var([], []).
 asignar_lista_var([X|Xs], Zs) :- asignar_lista_var(Xs, Ps), asignar_var(X, Ps, Zs).
 
@@ -74,11 +84,21 @@ asignar_lista_var([X|Xs], Zs) :- asignar_lista_var(Xs, Ps), asignar_var(X, Ps, Z
 % variables_libres(+Xs,+As,-Ys)
 %    Instancia en Yss la lista (en el mismo orden que en Xs) que por cada atomo 
 %    la variable libre que le corresponde en el mapeo As
+%    
+%    Ejemplo: 
+%        ?- variables_libres([rombo,cuadrado,rombo],[(rombo,A),(cuadrado,B)],M)
+%        M=[A,B,A];
+%        false.
 variables_libres([],_,[]).
 variables_libres([X|Xs], As, [Z|Ys]) :- member((X,Z),As), variables_libres(Xs,As,Ys).
 
 % variables_libres2(+Xss,+As,-Yss)
 %    Idem variables_libres2 pero con lista de listas
+%    
+%    Ejemplo: 
+%        ?- variables_libres2([[rombo,cuadrado,rombo],[cuadrado,cuadrado]],[(rombo,A),(cuadrado,B)],M)
+%        M=[[A,B,A],[B,B]];
+%        false.
 variables_libres2([],_,[]).
 variables_libres2([Xs|Xss], As, [Rs|Rss]) :- variables_libres(Xs, As, Rs), variables_libres2(Xss,As,Rss).
 
@@ -94,7 +114,13 @@ quitar(X,[L|Ls],[L|Rs]) :- X \== L, quitar(X,Ls,Rs).
 
 % Ejercicio 7
 
-% sinRepetidos(+Ls,-Ss)
+% sinRepetidos(+Ls,?Ss)
+%    True si la lista Ss contiene (en el mismo orden de Ls) la lista Ls sin repetidos
+%    
+%    Ejemplo:
+%       ?- sinRepetidos([2,1,2,3,3,4],L);
+%       L=[2,1,3,4];
+%       false;
 sinRepetidos([],[]).
 sinRepetidos([X|Xss],[X|Zs]) :- sinRepetidos(Xss,Rs), quitar(X,Rs,Zs).
 
