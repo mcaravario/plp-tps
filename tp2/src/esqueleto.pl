@@ -50,10 +50,10 @@ juntar_con1([H|T], J, R) :- append(H,[J],R1), juntar_con1(T,J,R2), append(R1,R2,
 
 juntar_con2([[]],_,[]).
 juntar_con2([[]|Yss],J,[J|Xs]) :- juntar_con2(Yss,J,Xs).
-juntar_con2([Ys|Yss],J,[X|Xs]) :- juntar_con2([Zs|Yss],J,Xs), append([X],Zs,Ys).
+juntar_con2([[X|Zs]|Yss],J,[X|Xs]) :- X \== J, juntar_con2([Zs|Yss],J,Xs).
 
-juntar_con(X,J,Y) :- var(X), juntar_con2(X,J,Y), !.
-juntar_con(X,J,Y) :- juntar_con1(X,J,Y).
+juntar_con(X,J,Y) :- var(X), juntar_con2(X,J,Y).
+juntar_con(X,J,Y) :- nonvar(X), juntar_con1(X,J,Y).
 
 
 % Ejercicio 3
@@ -70,7 +70,7 @@ palabras(S,P) :- juntar_con(P,espacio,S).
 %	*) al menos A ó L deben instanciarse.
 asignar_var(A,[],[(A,_)]).
 asignar_var(A,[(A,Z)|Xs],[(A,Z)|Xs]).
-asignar_var(A,[(X,V)|Xs],[(X,V)|Zs]) :- X \= A, asignar_var(A,Xs,Zs).
+asignar_var(A,[(X,V)|Xs],[(X,V)|Zs]) :- X \== A, asignar_var(A,Xs,Zs).
 
 % Ejercicio 5
 
@@ -165,6 +165,9 @@ incluido_en_dicc_ascii(N, [M|Ms]) :- N >= 1, diccionario_lista(M), N2 is N-1,
 % 4. Devuelve el mensaje en forma de string
 descifrar(S,M) :- palabras(S,P), palabras_con_variables(P,V), length(P,Z),
 				  incluido_en_dicc_ascii(Z,V),
+				  palabras(L1,V),
+				  cant_distintos(L1,N1), cant_distintos(S,N2),
+				  N1 == N2,
 				  juntar_con(V,32,R), string_codes(M,R).
 
 % Ejercicio 9
@@ -201,21 +204,18 @@ descifrar_sin_espacios(S,M) :- agregar_espacios(S,R), descifrar(R,M).
 % Ejercicio 10
 % suma_lista(+L,?S).
 suma_lista([],0).
-suma_lista([L|LS],S) :- suma_lista(LS,S1), S is S1+L.
-
-potencia(_,0,1) :- !.
-potencia(X,Y,Z) :- Y1 is Y - 1, potencia(X,Y1,Z1), Z is Z1*X.
+suma_lista([L|LS],S) :- suma_lista(LS,S1), S is S1 + L.
 
 % sumar_palabras(+L,?S).
 sumar_palabras([],0).
-sumar_palabras([L|LSS], S) :- length(L,L1),sumar_palabras(LSS,S1), S is L1+S1.
+sumar_palabras([L|LSS], S) :- length(L,L1), sumar_palabras(LSS,S1), S is L1 + S1.
 
 % promedio_longitudes(+LSS,?S).
 promedio_longitudes(LSS,P) :- length(LSS,L), sumar_palabras(LSS,S), P is S / L.
 
 % calcular_resta_al_cuadrado(+LSS,?S).
 calcular_resta_al_cuadrado([],_,[]).
-calcular_resta_al_cuadrado([L|LS], P, [R|RS]) :- length(L,L1), RESTA is L1-P, potencia(RESTA,2,R),
+calcular_resta_al_cuadrado([L|LS], P, [R|RS]) :- length(L,L1), RESTA is L1-P, R is RESTA * RESTA,
                                             calcular_resta_al_cuadrado(LS,P,RS).
 
 % desviacion(+LSS,?S).
@@ -223,8 +223,6 @@ desviacion(R,D) :- string_codes(R,C), juntar_con(LSS,32,C), promedio_longitudes(
                   calcular_resta_al_cuadrado(LSS,PR,L), suma_lista(L,SUM), length(LSS,N), DIV is SUM / N, 
                   D is sqrt(DIV). 
 
-mensajes_mas_parejos(S,M) :- descifrar_sin_espacios(S,M), desviacion(M,D1), not((descifrar_sin_espacios(S,R2),
-desviacion(R2,D2), D1 > D2)).
 
 % mensajes_mas_parejos(+S,?M).
 % Reversibilidad:
