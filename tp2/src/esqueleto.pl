@@ -42,6 +42,9 @@ diccionario_lista(L) :- diccionario(X), string_codes(X,L).
 
 % Ejercicio 2
 % juntar_con(?Xs, ?J, ?R)
+% Reversibilidad:
+%  *) Las 3 no pueden estar instanciadas a la vez o solo J instanciada. 
+%     No se cuelga en ningun caso, pero no enumera todas las posibles soluciones.
 juntar_con1([J],_,J).
 juntar_con1([H|T], J, R) :- append(H,[J],R1), juntar_con1(T,J,R2), append(R1,R2,R).
 
@@ -56,11 +59,15 @@ juntar_con(X,J,Y) :- juntar_con1(X,J,Y).
 % Ejercicio 3
 % palabras(?S,?P)
 % 
-% palabras es reversible porque juntar_con es reversible
-palabras(S,P) :- juntar_con(P,espacio,S), !.
+% Reversibilidad: 
+%   *) Ambas no pueden estar instancias porque depende de juntar_con (Ver juntar_con)
+palabras(S,P) :- juntar_con(P,espacio,S).
 
 % Ejercicio 4
 % asignar_var(?A,?L,-M)
+%
+% Reversibilidad:
+%	*) al menos A ó L deben instanciarse.
 asignar_var(A,[],[(A,_)]).
 asignar_var(A,[(A,Z)|Xs],[(A,Z)|Xs]).
 asignar_var(A,[(X,V)|Xs],[(X,V)|Zs]) :- X \= A, asignar_var(A,Xs,Zs).
@@ -107,7 +114,8 @@ palabras_con_variables(Xss,Vss) :- palabras(L,Xss), asignar_lista_var(L, As), va
 
 % Ejercicio 6
 
-% quitar(+X,+L,-R)
+% quitar(?X,+L,-R)
+% Observación: L debe estar instanciada, pero puede contener variables libres.
 quitar(_,[],[]).
 quitar(X,[L|Ls],Rs) :- X == L, quitar(X,Ls,Rs).
 quitar(X,[L|Ls],[L|Rs]) :- X \== L, quitar(X,Ls,Rs).
@@ -116,6 +124,7 @@ quitar(X,[L|Ls],[L|Rs]) :- X \== L, quitar(X,Ls,Rs).
 
 % sinRepetidos(+Ls,?Ss)
 %    True si la lista Ss contiene (en el mismo orden de Ls) la lista Ls sin repetidos
+% Observación: L debe estar instanciada, pero puede contener variables libres.
 %    
 %    Ejemplo:
 %       ?- sinRepetidos([2,1,2,3,3,4],L);
@@ -125,52 +134,103 @@ sinRepetidos([],[]).
 sinRepetidos([X|Xss],[X|Zs]) :- sinRepetidos(Xss,Rs), quitar(X,Rs,Zs).
 
 % cantDistintos(+L,-N)
+% Observación: L debe estar instanciada, pero puede contener variables libres.
 cant_distintos(L,N) :- sinRepetidos(L,L2), length(L2,N).
 
 % Ejercicio 8
 
 %incluido_en_dicc_ascii genera todas las posibles listas que contengan palabras del diccionario (su secuencia de numeros ascii) y
 % que sean de longitud N.
-% incluido(+n,?L)
+% incluido_en_dicc_ascii(+N,?L)
+% 
+% Reversibilidad: 
+%    N debe estar instanciado, porque se hacen comparaciones y cuentas con is.
 incluido_en_dicc_ascii(0, []).
 incluido_en_dicc_ascii(N, [M|Ms]) :- N >= 1, diccionario_lista(M), N2 is N-1, 
 									 incluido_en_dicc_ascii(N2,Ms).
 
 % descifrar(+S, ?M)
+% Reversibilidad: 
+%    *) S debe estar instanciado pues
+%    de lo contrario, palabras(S,P) explora solo las frases
+%    vacias (S=[],S=[espacio],S=[espacio,espacio],etc) por lo tanto
+%    nunca llega a unificar con nada.
+% 
+% Funcionamiento (Generate & Test):
+% 1. Separa los simbolos por espacios (en lista de listas), 
+% 2. Asigna una variable fresca distinta a cada simbolo distinto.
+% 3. Genera todas las posibles frases del diccionario (en forma de lista de listas de numeros ascii)
+%    que unifiquen con las variables y filtra las asignaciones 
+%    que a dos simbolos diferentes les corresponde la misma letra
+% 4. Devuelve el mensaje en forma de string
 descifrar(S,M) :- palabras(S,P), palabras_con_variables(P,V), length(P,Z),
 				  incluido_en_dicc_ascii(Z,V),
 				  juntar_con(V,32,R), string_codes(M,R).
 
 % Ejercicio 9
-% Genera todas posibles formas de insertar espacios en la primer lista
 
 % agregar_espacios(+L, ?R)
+% Genera todas posibles formas de insertar espacios en la primer lista
+% 
+% Ejemplo:
+%		?- agregar_espacios([a,b,c],M).
+% 		M = [a, espacio, b, espacio, c, espacio] ;
+% 		M = [a, espacio, b, espacio, c] ;
+% 		M = [a, espacio, b, c, espacio] ;
+% 		M = [a, espacio, b, c] ;
+% 		M = [a, b, espacio, c, espacio] ;
+% 		M = [a, b, espacio, c] ;
+% 		M = [a, b, c, espacio] ;
+% 		M = [a, b, c].
+%
+% Reversibilidad:
+%     *) L debe estar instanciada ya que si no se cuelga.
+%     *) Ambas no pueden no instanciadas, porque no genera
+%     todas las posibles soluciones, hay ramas a las que nunca llega a explorar.
+
 agregar_espacios([],[]).
 agregar_espacios([L|Ls],R) :- append([L],[espacio],L1), agregar_espacios(Ls,R1), append(L1,R1,R).
 agregar_espacios([L|Ls],R) :- agregar_espacios(Ls,R1), append([L],R1,R).
 
 % descifrar_sin_espacios(+S,?M)
+% Reversibilidad: 
+%   *) No es reversible pues descifrar no es reversible (ver descifrar).
+%      y además por que si S no esta instanciado agregar_espacios(S,R) no termina.
 descifrar_sin_espacios(S,M) :- agregar_espacios(S,R), descifrar(R,M).
 
 % Ejercicio 10
+% suma_lista(+L,?S).
 suma_lista([],0).
 suma_lista([L|LS],S) :- suma_lista(LS,S1), S is S1+L.
 
 potencia(_,0,1) :- !.
 potencia(X,Y,Z) :- Y1 is Y - 1, potencia(X,Y1,Z1), Z is Z1*X.
 
+% sumar_palabras(+L,?S).
 sumar_palabras([],0).
 sumar_palabras([L|LSS], S) :- length(L,L1),sumar_palabras(LSS,S1), S is L1+S1.
 
+% promedio_longitudes(+LSS,?S).
 promedio_longitudes(LSS,P) :- length(LSS,L), sumar_palabras(LSS,S), P is S / L.
 
+% calcular_resta_al_cuadrado(+LSS,?S).
 calcular_resta_al_cuadrado([],_,[]).
 calcular_resta_al_cuadrado([L|LS], P, [R|RS]) :- length(L,L1), RESTA is L1-P, potencia(RESTA,2,R),
                                             calcular_resta_al_cuadrado(LS,P,RS).
 
+% desviacion(+LSS,?S).
 desviacion(R,D) :- string_codes(R,C), juntar_con(LSS,32,C), promedio_longitudes(LSS,PR), 
                   calcular_resta_al_cuadrado(LSS,PR,L), suma_lista(L,SUM), length(LSS,N), DIV is SUM / N, 
                   D is sqrt(DIV). 
 
 mensajes_mas_parejos(S,M) :- descifrar_sin_espacios(S,M), desviacion(M,D1), not((descifrar_sin_espacios(S,R2),
 desviacion(R2,D2), D1 > D2)).
+
+% mensajes_mas_parejos(+S,?M).
+% Reversibilidad:
+%	S debe estar instanciado, porque descifrar_sin_espacios no puede tener a S no instanciado
+% Funcionamiento:
+%	1. Genera todos los posibles mensajes M sin espacios
+%	2. Calcula su desviación estandar
+%	3. Se fija que para todo otro descriframiento M' no puede tener una desviacion menor (no existe instancia en la que haya M' con desviacion menor)
+mensajes_mas_parejos(S,M) :- descifrar_sin_espacios(S,M), desviacion(M,D1), not((descifrar_sin_espacios(S,R2),desviacion(R2,D2), D1 > D2)).
