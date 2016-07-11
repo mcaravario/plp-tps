@@ -45,15 +45,9 @@ diccionario_lista(L) :- diccionario(X), string_codes(X,L).
 % Reversibilidad:
 %  *) Las 3 no pueden estar instanciadas a la vez o solo J instanciada. 
 %     No se cuelga en ningun caso, pero no enumera todas las posibles soluciones.
-juntar_con1([J],_,J).
-juntar_con1([H|T], J, R) :- append(H,[J],R1), juntar_con1(T,J,R2), append(R1,R2,R).
-
-juntar_con2([[]],_,[]).
-juntar_con2([[]|Yss],J,[J|Xs]) :- juntar_con2(Yss,J,Xs).
-juntar_con2([[X|Zs]|Yss],J,[X|Xs]) :- X \== J, juntar_con2([Zs|Yss],J,Xs).
-
-juntar_con(X,J,Y) :- var(X), juntar_con2(X,J,Y).
-juntar_con(X,J,Y) :- nonvar(X), juntar_con1(X,J,Y).
+juntar_con([[]],_,[]).
+juntar_con([[]|Yss],J,[J|Xs]) :- juntar_con(Yss,J,Xs).
+juntar_con([[X|Zs]|Yss],J,[X|Xs]) :- X \== J, juntar_con([Zs|Yss],J,Xs).
 
 
 % Ejercicio 3
