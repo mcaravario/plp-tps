@@ -67,43 +67,46 @@ asignar_var(A, L, [(A,X)|L]) :- not(member((A,X),L)).
 
 % Ejercicio 5
 
-% asignar_lista_var(+Xs,-Zs)
-%    Instancia en Zs el mapa de variables libres por cada atomo en Xs
-%    
+% asignar_lista_var(+Xs, ?Rs, -Ms)
+%    Instancia en Ms el mapa de variables libres por cada atomo en Xs, a partir
+%    de los reemplazos recibidos en Rs.
+%
 %    Ejemplos:
-%       ?- asignar_lista_var([rombo,cuadrado,circulo],M).
-%       M=[(circulo,_G3300),(cuadrado,_G3309),(rombo,_G3321)];
-%       false.
-%       ?- asignar_lista_var([rombo,cuadrado,rombo],M).
-%       M=[(rombo,_G1440),(cuadrado,_G1452)];
-%       false.
-asignar_lista_var([], []).
-asignar_lista_var([X|Xs], Zs) :- asignar_lista_var(Xs, Ps), asignar_var(X, Ps, Zs).
+%        ?- asignar_lista_var([cuadrado, rombo, sol], [], M).
+%        M = [ (sol, _G19844091), (rombo, _G19844076), (cuadrado, _G19844061)].
+%        ?- asignar_lista_var([cuadrado, rombo, sol], [(perro, _)], M).
+%        M = [ (sol, _G19844106), (rombo, _G19844091), (cuadrado, _G19844076), (perro, _G19843978)].
+%        ?- asignar_lista_var([cuadrado, rombo, sol], [(sol, _)], M).
+%        M = [ (rombo, _G19844091), (cuadrado, _G19844076), (sol, _G19843978)] ;
+%        false.
+asignar_lista_var([], L, L).
+asignar_lista_var([X|Xs], Rs, Ms) :- asignar_var(X, Rs, NRs), asignar_lista_var(Xs, NRs, Ms).
 
-
-% variables_libres(+Xs,+As,-Ys)
-%    Instancia en Yss la lista (en el mismo orden que en Xs) que por cada atomo 
+% variables_libres(+Xs, +As, -Ys)
+%    Instancia en Ys la lista (en el mismo orden que en Xs) que por cada atomo
 %    la variable libre que le corresponde en el mapeo As
-%    
-%    Ejemplo: 
-%        ?- variables_libres([rombo,cuadrado,rombo],[(rombo,A),(cuadrado,B)],M)
-%        M=[A,B,A];
+%
+%    Ejemplo:
+%        ?- variables_libres([rombo, cuadrado, rombo],[(rombo, A), (cuadrado, B)], M)
+%        M = [A, B, A];
 %        false.
-variables_libres([],_,[]).
-variables_libres([X|Xs], As, [Z|Ys]) :- member((X,Z),As), variables_libres(Xs,As,Ys).
+variables_libres([], _, []).
+variables_libres([X|Xs], As, [Y|Ys]) :- member((X,Y),As), variables_libres(Xs,As,Ys).
 
-% variables_libres2(+Xss,+As,-Yss)
-%    Idem variables_libres2 pero con lista de listas
-%    
-%    Ejemplo: 
-%        ?- variables_libres2([[rombo,cuadrado,rombo],[cuadrado,cuadrado]],[(rombo,A),(cuadrado,B)],M)
-%        M=[[A,B,A],[B,B]];
-%        false.
-variables_libres2([],_,[]).
-variables_libres2([Xs|Xss], As, [Rs|Rss]) :- variables_libres(Xs, As, Rs), variables_libres2(Xss,As,Rss).
+% son_reemplazos(+Xs, +Vs, +Rs, -NRs)
+%    TODO: comentar.
+reemplazar_por_variables_libres(Xs, Vs, Rs, NRs) :- asignar_lista_var(Xs, Rs, NRs), variables_libres(Xs, NRs, Vs).
+
+% palabras_con_variables_accum(+Xss, -Vss, +Rs)
+%    TODO: comentar.
+palabras_con_variables_accum([], [], _).
+palabras_con_variables_accum([Xs|Xss], [Vs|Vss], Rs) :-
+	reemplazar_por_variables_libres(Xs, Vs, Rs, NRs),
+	palabras_con_variables_accum(Xss, Vss, NRs).
 
 % palabras_con_variables(+Xss,-Vss)
-palabras_con_variables(Xss,Vss) :- palabras(L,Xss), asignar_lista_var(L, As), variables_libres2(Xss,As,Vss).
+% palabras_con_variables(Xss,Vss) :- palabras(L,Xss), asignar_lista_var(L, As), variables_libres2(Xss,As,Vss).
+palabras_con_variables(XSS, VSS) :- palabras_con_variables_accum(XSS, VSS, []).
 
 % Ejercicio 6
 
