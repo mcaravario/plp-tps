@@ -62,9 +62,8 @@ palabras(S,P) :- juntar_con(P,espacio,S).
 %
 % Reversibilidad:
 %	*) al menos A ó L deben instanciarse.
-asignar_var(A,[],[(A,_)]).
-asignar_var(A,[(A,Z)|Xs],[(A,Z)|Xs]).
-asignar_var(A,[(X,V)|Xs],[(X,V)|Zs]) :- X \== A, asignar_var(A,Xs,Zs).
+asignar_var(A, L, L) :- member((A,_),L).
+asignar_var(A, L, [(A,X)|L]) :- not(member((A,X),L)).
 
 % Ejercicio 5
 
