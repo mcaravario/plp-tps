@@ -185,8 +185,8 @@ descifrar(S,M) :- palabras(S,P), palabras_con_variables(P,V), length(P,Z),
 %     todas las posibles soluciones, hay ramas a las que nunca llega a explorar.
 
 agregar_espacios([],[]).
-agregar_espacios([L|Ls],R) :- append([L],[espacio],L1), agregar_espacios(Ls,R1), append(L1,R1,R).
-agregar_espacios([L|Ls],R) :- agregar_espacios(Ls,R1), append([L],R1,R).
+agregar_espacios([L|Ls],[L,espacio|R1]) :- agregar_espacios(Ls,R1).
+agregar_espacios([L|Ls],[L|R1]) :- agregar_espacios(Ls,R1).
 
 % descifrar_sin_espacios(+S,?M)
 % Reversibilidad: 
