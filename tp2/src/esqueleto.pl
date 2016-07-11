@@ -158,10 +158,8 @@ incluido_en_dicc_ascii([M|Ms]) :- diccionario_lista(M),
 % 4. Devuelve el mensaje en forma de string
 descifrar(S,M) :- palabras(S,P), palabras_con_variables(P,V),
 				  incluido_en_dicc_ascii(V),
-				  palabras(L1,V),
-				  cant_distintos(L1,N1), cant_distintos(S,N2),
-				  N1 == N2,
-				  juntar_con(V,32,R), string_codes(M,R).
+				  juntar_con(V,32,R), cant_distintos(R,N1), cant_distintos(S,N1),
+				  string_codes(M,R).
 
 % Ejercicio 9
 
