@@ -138,9 +138,9 @@ cant_distintos(L,N) :- sinRepetidos(L,L2), length(L2,N).
 % 
 % Reversibilidad: 
 %    N debe estar instanciado, porque se hacen comparaciones y cuentas con is.
-incluido_en_dicc_ascii(0, []).
-incluido_en_dicc_ascii(N, [M|Ms]) :- N >= 1, diccionario_lista(M), N2 is N-1, 
-									 incluido_en_dicc_ascii(N2,Ms).
+incluido_en_dicc_ascii([]).
+incluido_en_dicc_ascii([M|Ms]) :- diccionario_lista(M),
+								  incluido_en_dicc_ascii(Ms).
 
 % descifrar(+S, ?M)
 % Reversibilidad: 
@@ -156,8 +156,8 @@ incluido_en_dicc_ascii(N, [M|Ms]) :- N >= 1, diccionario_lista(M), N2 is N-1,
 %    que unifiquen con las variables y filtra las asignaciones 
 %    que a dos simbolos diferentes les corresponde la misma letra
 % 4. Devuelve el mensaje en forma de string
-descifrar(S,M) :- palabras(S,P), palabras_con_variables(P,V), length(P,Z),
-				  incluido_en_dicc_ascii(Z,V),
+descifrar(S,M) :- palabras(S,P), palabras_con_variables(P,V),
+				  incluido_en_dicc_ascii(V),
 				  palabras(L1,V),
 				  cant_distintos(L1,N1), cant_distintos(S,N2),
 				  N1 == N2,
