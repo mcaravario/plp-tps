@@ -93,7 +93,7 @@ asignar_lista_var([X|Xs], Rs, Ms) :- asignar_var(X, Rs, NRs), asignar_lista_var(
 variables_libres([], _, []).
 variables_libres([X|Xs], As, [Y|Ys]) :- member((X,Y),As), variables_libres(Xs,As,Ys).
 
-% son_reemplazos(+Xs, +Vs, +Rs, -NRs)
+% reemplazar_por_variables_libres(+Xs, +Vs, +Rs, -NRs)
 %    TODO: comentar.
 reemplazar_por_variables_libres(Xs, Vs, Rs, NRs) :- asignar_lista_var(Xs, Rs, NRs), variables_libres(Xs, NRs, Vs).
 
@@ -135,12 +135,8 @@ cant_distintos(L,N) :- sinRepetidos(L,L2), length(L2,N).
 
 % Ejercicio 8
 
-%incluido_en_dicc_ascii genera todas las posibles listas que contengan palabras del diccionario (su secuencia de numeros ascii) y
-% que sean de longitud N.
+%incluido_en_dicc_ascii genera todas las posibles listas que contengan palabras del diccionario (su secuencia de numeros ascii)
 % incluido_en_dicc_ascii(+N,?L)
-% 
-% Reversibilidad: 
-%    N debe estar instanciado, porque se hacen comparaciones y cuentas con is.
 incluido_en_dicc_ascii([]).
 incluido_en_dicc_ascii([M|Ms]) :- diccionario_lista(M),
 								  incluido_en_dicc_ascii(Ms).
