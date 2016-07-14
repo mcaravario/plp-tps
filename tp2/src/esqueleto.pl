@@ -67,38 +67,28 @@ asignar_var(A, L, [(A,X)|L]) :- not(member((A,X),L)).
 
 % Ejercicio 5
 
-% asignar_lista_var(+Xs, ?Rs, -Ms)
+% asignar_lista_var(+Xs, ?Rs, -Ms, -Vs)
 %    Instancia en Ms el mapa de variables libres por cada atomo en Xs, a partir
 %    de los reemplazos recibidos en Rs.
 %
 %    Ejemplos:
-%        ?- asignar_lista_var([cuadrado, rombo, sol], [], M).
-%        M = [ (sol, _G19844091), (rombo, _G19844076), (cuadrado, _G19844061)].
-%        ?- asignar_lista_var([cuadrado, rombo, sol], [(perro, _)], M).
-%        M = [ (sol, _G19844106), (rombo, _G19844091), (cuadrado, _G19844076), (perro, _G19843978)].
-%        ?- asignar_lista_var([cuadrado, rombo, sol], [(sol, _)], M).
-%        M = [ (rombo, _G19844091), (cuadrado, _G19844076), (sol, _G19843978)] ;
-%        false.
-asignar_lista_var([], L, L).
-asignar_lista_var([X|Xs], Rs, Ms) :- asignar_var(X, Rs, NRs), asignar_lista_var(Xs, NRs, Ms).
-
-% variables_libres(+Xs, +As, -Ys)
-%    Instancia en Ys la lista (en el mismo orden que en Xs) que por cada atomo
-%    la variable libre que le corresponde en el mapeo As
-%
-%    Ejemplo:
-%        ?- variables_libres([rombo, cuadrado, rombo],[(rombo, A), (cuadrado, B)], M)
-%        M = [A, B, A];
-%        false.
-variables_libres([], _, []).
-variables_libres([X|Xs], As, [Y|Ys]) :- member((X,Y),As), variables_libres(Xs,As,Ys).
+%        ?- asignar_lista_var([cuadrado, rombo, sol], [], M, V).
+%        M = [ (sol, _G64), (rombo, _G43), (cuadrado, _G22)],
+%        V = [_G22, _G43, _G64] ;
+%        ?- asignar_lista_var([cuadrado, rombo, sol], [(perro, _)], M, V).
+%        M = [ (sol, _G53), (rombo, _G41), (cuadrado, _G29), (perro, _G1)],
+%        V = [_G29, _G41, _G53]
+%        ?- asignar_lista_var([cuadrado, rombo, sol], [(sol, _)], M, V).
+%        M = [ (rombo, _G41), (cuadrado, _G29), (sol, _G1)],
+%        V = [_G29, _G41, _G1]
+asignar_lista_var([], L, L, []).
+asignar_lista_var([X|Xs], Rs, Ms, [V|Vs]) :- asignar_var(X, Rs, NRs), member((X,V),NRs), asignar_lista_var(Xs, NRs, Ms, Vs).
 
 % palabras_con_variables_accum(+Xss, -Vss, +Rs)
 %    Igual que palabras_con_variables, pero acumula en Rs las asignaciones
 palabras_con_variables_accum([], [], _).
 palabras_con_variables_accum([Xs|Xss], [Vs|Vss], Rs) :-
-        asignar_lista_var(Xs, Rs, NRs),
-        variables_libres(Xs, NRs, Vs),
+        asignar_lista_var(Xs, Rs, NRs, Vs),
         palabras_con_variables_accum(Xss, Vss, NRs).
 
 % palabras_con_variables(+Xss,-Vss)
