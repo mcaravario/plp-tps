@@ -93,16 +93,13 @@ asignar_lista_var([X|Xs], Rs, Ms) :- asignar_var(X, Rs, NRs), asignar_lista_var(
 variables_libres([], _, []).
 variables_libres([X|Xs], As, [Y|Ys]) :- member((X,Y),As), variables_libres(Xs,As,Ys).
 
-% reemplazar_por_variables_libres(+Xs, +Vs, +Rs, -NRs)
-%    TODO: comentar.
-reemplazar_por_variables_libres(Xs, Vs, Rs, NRs) :- asignar_lista_var(Xs, Rs, NRs), variables_libres(Xs, NRs, Vs).
-
 % palabras_con_variables_accum(+Xss, -Vss, +Rs)
 %    TODO: comentar.
 palabras_con_variables_accum([], [], _).
 palabras_con_variables_accum([Xs|Xss], [Vs|Vss], Rs) :-
-	reemplazar_por_variables_libres(Xs, Vs, Rs, NRs),
-	palabras_con_variables_accum(Xss, Vss, NRs).
+        asignar_lista_var(Xs, Rs, NRs),
+        variables_libres(Xs, NRs, Vs),
+        palabras_con_variables_accum(Xss, Vss, NRs).
 
 % palabras_con_variables(+Xss,-Vss)
 % palabras_con_variables(Xss,Vss) :- palabras(L,Xss), asignar_lista_var(L, As), variables_libres2(Xss,As,Vss).
