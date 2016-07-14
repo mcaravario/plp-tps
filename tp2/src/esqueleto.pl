@@ -94,7 +94,7 @@ variables_libres([], _, []).
 variables_libres([X|Xs], As, [Y|Ys]) :- member((X,Y),As), variables_libres(Xs,As,Ys).
 
 % palabras_con_variables_accum(+Xss, -Vss, +Rs)
-%    TODO: comentar.
+%    Igual que palabras_con_variables, pero acumula en Rs las asignaciones
 palabras_con_variables_accum([], [], _).
 palabras_con_variables_accum([Xs|Xss], [Vs|Vss], Rs) :-
         asignar_lista_var(Xs, Rs, NRs),
@@ -102,8 +102,7 @@ palabras_con_variables_accum([Xs|Xss], [Vs|Vss], Rs) :-
         palabras_con_variables_accum(Xss, Vss, NRs).
 
 % palabras_con_variables(+Xss,-Vss)
-% palabras_con_variables(Xss,Vss) :- palabras(L,Xss), asignar_lista_var(L, As), variables_libres2(Xss,As,Vss).
-palabras_con_variables(XSS, VSS) :- palabras_con_variables_accum(XSS, VSS, []).
+palabras_con_variables(Xss, Vss) :- palabras_con_variables_accum(Xss, Vss, []).
 
 % Ejercicio 6
 
